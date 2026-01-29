@@ -1,7 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
 import { getDictionary } from "../../get-dictionary";
-import { ThemeToggle } from "../../components/ThemeToggle";
 
 export default async function Home({
   params,
@@ -10,7 +8,6 @@ export default async function Home({
 }) {
   const { lang } = await params;
   const dict = await getDictionary(lang);
-  const otherLang = lang === "en" ? "vi" : "en";
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 relative overflow-hidden">
@@ -23,22 +20,7 @@ export default async function Home({
       </div>
 
       <div className="max-w-4xl mx-auto relative z-10">
-        {/* Header / Lang Switch */}
-        <div className="flex justify-between items-center mb-12">
-           <h1 className="text-xl font-bold text-[var(--color-lunar-gold)] tracking-widest uppercase">
-             2026
-           </h1>
-           <div className="flex items-center gap-3">
-            <Link 
-              href={`/${otherLang}`}
-              className="px-4 py-2 text-sm rounded-full border border-[var(--color-lunar-muted)] hover:border-[var(--color-lunar-gold)] hover:text-[var(--color-lunar-gold)] transition-colors"
-            >
-              {dict.home.switch_lang}
-            </Link>
-            <ThemeToggle />
-           </div>
-        </div>
-
+        
         {/* Hero Section */}
         <div className="flex flex-col md:flex-row items-center gap-10 mb-16">
           <div className="relative group">
@@ -48,6 +30,7 @@ export default async function Home({
                  src="/profile.PNG"
                  alt="Avatar"
                  fill
+                 sizes="(max-width: 768px) 192px, 192px"
                  className="object-cover"
                />
             </div>

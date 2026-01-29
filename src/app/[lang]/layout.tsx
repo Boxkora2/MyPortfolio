@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "../../components/Providers";
+import { Navigation } from "../../components/Navigation";
+import { getDictionary } from "../../get-dictionary";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -30,13 +32,17 @@ export default async function RootLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
+  const dict = await getDictionary(lang as "en" | "vi");
   return (
     <html lang={lang} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--color-lunar-bg)] text-[var(--color-lunar-text)]`}
         suppressHydrationWarning
       >
-        <Providers>{children}</Providers>
+        <Providers>
+            <Navigation lang={lang} dict={dict} />
+            {children}
+        </Providers>
       </body>
     </html>
   );
