@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getDictionary } from "../../get-dictionary";
+import { ThemeToggle } from "../../components/ThemeToggle";
 
 export default async function Home({
   params,
@@ -27,12 +28,15 @@ export default async function Home({
            <h1 className="text-xl font-bold text-[var(--color-lunar-gold)] tracking-widest uppercase">
              2026
            </h1>
-           <Link 
-             href={`/${otherLang}`}
-             className="px-4 py-2 rounded-full border border-[var(--color-lunar-muted)] hover:border-[var(--color-lunar-gold)] hover:text-[var(--color-lunar-gold)] transition-colors"
-           >
-             {dict.home.switch_lang}
-           </Link>
+           <div className="flex items-center gap-3">
+            <Link 
+              href={`/${otherLang}`}
+              className="px-4 py-2 text-sm rounded-full border border-[var(--color-lunar-muted)] hover:border-[var(--color-lunar-gold)] hover:text-[var(--color-lunar-gold)] transition-colors"
+            >
+              {dict.home.switch_lang}
+            </Link>
+            <ThemeToggle />
+           </div>
         </div>
 
         {/* Hero Section */}

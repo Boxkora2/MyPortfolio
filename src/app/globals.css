@@ -1,6 +1,22 @@
 @import "tailwindcss";
 
-@theme {
+/* Base Variables (Light Mode Default) */
+:root {
+  color-scheme: light;
+  /* Light Mode (Solar Theme - Soft/Not too bright) */
+  --color-lunar-bg: #d9d4cd; /* Slate 200 - Soft gray-blue background */
+  --color-lunar-card: #ebe6de; /* Slate 50 - Slightly lighter for cards */
+  --color-lunar-primary: #dc2626; /* Red-600 */
+  --color-lunar-secondary: #0d9488; /* Teal-600 */
+  --color-lunar-gold: #d97706; /* Amber-600 */
+  --color-lunar-text: #0f172a; /* Slate 900 */
+  --color-lunar-muted: #64748b; /* Slate 500 */
+  --color-lunar-glow: rgba(220, 38, 38, 0.5); /* Matching primary red */
+}
+
+/* Dark Mode (Original Lunar Theme) */
+.dark {
+  color-scheme: dark;
   --color-lunar-bg: #091320; /* Deepest Night Blue */
   --color-lunar-card: #142236; /* Slightly lighter card bg */
   --color-lunar-primary: #FF4D6D; /* Lantern Red/Pink */
@@ -8,6 +24,26 @@
   --color-lunar-gold: #FFB703; /* Moon Gold */
   --color-lunar-text: #F8F9FA; /* Off-white text */
   --color-lunar-muted: #9CA3AF; /* Muted text */
+  --color-lunar-glow: rgba(255, 77, 109, 0.5);
+}
+
+/* Gentle Color Transition */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, button, input, textarea {
+  transition-property: background-color, border-color, color, fill, stroke, shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 500ms;
 }
 
 /* Custom Utilities for the Lunar Theme if needed */
@@ -16,35 +52,11 @@
 }
 
 .text-glow {
-  text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+  text-shadow: 0 0 10px var(--color-lunar-glow);
 }
 
 body {
   background-color: var(--color-lunar-bg);
   color: var(--color-lunar-text);
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
