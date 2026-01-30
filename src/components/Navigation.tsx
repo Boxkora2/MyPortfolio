@@ -15,20 +15,27 @@ export function Navigation({ lang, dict }: NavigationProps) {
 
   return (
     <nav className="w-full py-6 px-4 sm:px-8 flex justify-between items-center relative z-50">
-      {/* Brand / Home Link */}
-      <Link href={`/${lang}`} className="group relative px-4 py-2">
-           <span className="absolute inset-0 bg-white/10 dark:bg-white/5 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300"></span>
-           <h1 className="relative z-10 text-xl font-bold tracking-widest uppercase transition-all duration-300 group-hover:brightness-150 group-hover:text-glow">
-            {dict.nav.home}
-           </h1>
-      </Link>
-
-      <div className="flex items-center gap-2 sm:gap-6">
-        {/* Navigation Links */}
+      <div className="flex items-center gap-2 sm:gap-4">
+        {/* Brand / Home Link */}
+        <Link href={`/${lang}`} className="group relative px-4 py-2">
+            <span className="absolute inset-0 bg-white/10 dark:bg-white/5 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300"></span>
+            <h1 className="relative z-10 text-xl font-bold tracking-widest uppercase transition-all duration-300 group-hover:brightness-150 group-hover:text-glow">
+              {dict.nav.home}
+            </h1>
+        </Link>
         <NavItem 
           href={`/${lang}/clicky-addicty`} 
           label={dict.nav.clicky} 
           active={pathname === `/${lang}/clicky-addicty`} 
+        />
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-6">
+        {/* Navigation Links */}
+        <NavItem 
+          href={`/${lang}/converter`} 
+          label={dict.nav.converter} 
+          active={pathname === `/${lang}/converter`} 
         />
 
         {/* Separator */}
