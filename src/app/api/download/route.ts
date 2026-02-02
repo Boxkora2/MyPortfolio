@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import youtubeDl from "youtube-dl-exec";
 import { exec } from "child_process";
 import { promisify } from "util";
+import { existsSync } from "fs";
 
 const execAsync = promisify(exec);
 
@@ -10,10 +11,25 @@ export const dynamic = 'force-dynamic';
 
 // Configure youtube-dl-exec to use system yt-dlp
 const binaryPath = 'C:\\Users\\kurot\\AppData\\Local\\Microsoft\\WinGet\\Links\\yt-dlp.exe';
-const ytDlp = (url: string, options: any) => youtubeDl.create(binaryPath)(url, options);
+const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+const binaryExists = !isProduction && existsSync(binaryPath);
+
+const ytDlp = (url: string, options: any) => {
+  if (!binaryExists) {
+    throw new Error('yt-dlp binary not available in this environment');
+  }
+  return youtubeDl.create(binaryPath)(url, options);
+};
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if we're on Vercel/Production where yt-dlp isn't available
+    if (isProduction || !binaryExists) {
+      return NextResponse.json({
+        error: "Video converter is not available on Vercel deployment. This feature requires yt-dlp binary which cannot run in serverless environments. Please run this locally or deploy to a platform that supports Docker/VPS (Railway, Render, DigitalOcean)."
+      }, { status: 501 });
+    }
+
     const { url, formatId, quality, isAudio } = await request.json();
 
     if (!url || !formatId) {
