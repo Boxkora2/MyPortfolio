@@ -5,16 +5,24 @@ Next.js 16 portfolio site with **internationalization (i18n)**, custom Lunar/Sol
 
 ## Architecture & Key Patterns
 
-### Internationalization (i18n) Structure
-- **Route-based i18n**: All pages live under `src/app/[lang]/` where `lang` is "en" or "vi"
+### Internationalization (i18n) Structure (2026 Standard - English No Prefix)
+- **Route-based i18n**: English pages at root (`src/app/`), Vietnamese pages under `src/app/vi/`
+  - English (default): `domain.com`, `domain.com/converter`, `domain.com/clicky-addicty`
+  - Vietnamese: `domain.com/vi`, `domain.com/vi/converter`, `domain.com/vi/clicky-addicty`
 - **Middleware pattern**: `src/proxy.ts` handles locale detection via `@formatjs/intl-localematcher` and `negotiator`
   - Matcher config: `/((?!_next|api|favicon.ico|.*\..*).*)`excludes internal paths, API routes, and static files
-  - Default locale rewrites URL, non-default redirects to localized path
-- **Dictionary system**: Use `getDictionary(lang)` from `src/get-dictionary.ts` to load translations from `src/dictionaries/{en,vi}.json`
+  - Detects user language preference and redirects to `/vi` if Vietnamese preferred
+  - English pages served directly without prefix (no redirect/rewrite needed)
+- **Dictionary system**: Use `getDictionary(locale)` from `src/get-dictionary.ts` to load translations from `src/dictionaries/{en,vi}.json`
+  - Locale parameter is optional, defaults to "en"
+  - Each layout (root and vi/) fetches its own dictionary
 - **Server-only imports**: Dictionary loading uses `"server-only"` package to prevent client-side bundling
-- **Language switching**: Navigation preserves current path when switching languages via `/${otherLang}${pathname.substring(3)}`
+- **Language switching**: Navigation component has `getOtherLangLink()` helper
+  - English → Vietnamese: adds `/vi` prefix to current path
+  - Vietnamese → English: removes `/vi` prefix from current path
+  - Example: `/converter` ↔ `/vi/converter`, `/` ↔ `/vi`
 
-Example: Adding a new page requires creating `src/app/[lang]/new-page/page.tsx` and updating dictionary files with translations.
+Example: Adding a new page requires creating both `src/app/new-page/page.tsx` (English) and `src/app/vi/new-page/page.tsx` (Vietnamese), plus updating dictionary files.
 
 ### Custom Theme System ("Lunar Theme")
 - **CSS variables in `src/app/globals.css`**: All colors use `var(--color-lunar-*)` tokens, NOT direct Tailwind classes
@@ -27,13 +35,16 @@ Example: Adding a new page requires creating `src/app/[lang]/new-page/page.tsx` 
 - **Client components**: Use `"use client"` directive for interactivity (Navigation, ThemeToggle, FeaturedSection, ClickyGame, VideoDownloader)
   - Example: `Navigation` receives `lang` and `dict` as props from server layout
   - State management: Use React hooks (useState, useRef) for interactive features
-- **Server components**: Pages and layouts are async server components that await dictionaries and params
-  - Example: `export default async function Home({ params }: { params: Promise<{ lang: "en" | "vi" }> })`
-- **Params handling**: Next.js 16 requires `await params` in pages/layouts - params is a Promise
-  - Pattern: `const { lang } = await params;` at start of component
-- **Dictionary passing**: RootLayout fetches dictionary and passes to client components as props
-  - Server fetches: `const dict = await getDictionary(lang as "en" | "vi");`
-  - Client receives: `function Navigation({ lang, dict }: NavigationProps)`
+  - Navigation has helper functions: `getLink(path)` adds `/vi` for Vietnamese, `getOtherLangLink()` toggles languages
+- **Server components**: Pages and layouts are async server components that fetch dictionaries
+  - Root layout example: `export default async function RootLayout({ children }: { children: React.ReactNode })`
+  - No params needed - locale determined by route structure (root = English, /vi = Vietnamese)
+- **No params handling needed**: Unlike old `[lang]` structure, pages don't receive dynamic params
+  - Root pages: `const dict = await getDictionary("en");`
+  - Vietnamese pages: `const dict = await getDictionary("vi");`
+- **Dictionary passing**: Each layout fetches dictionary and passes to Navigation
+  - Root layout: `const dict = await getDictionary("en");` → `<Navigation lang="en" dict={dict} />`
+  - Vi layout: `const dict = await getDictionary("vi");` → `<Navigation lang="vi" dict={dict} />`
 
 ### API Routes & Video Downloader
 - **Local-only feature**: Video converter (`src/app/api/video-info/route.ts`) uses `youtube-dl-exec` with hardcoded local binary path `C:\\Users\\kurot\\AppData\\Local\\Microsoft\\WinGet\\Links\\yt-dlp.exe`
@@ -48,33 +59,46 @@ Example: Adding a new page requires creating `src/app/[lang]/new-page/page.tsx` 
 ```
 src/
 ├── app/
-│   ├── [lang]/          # Localized routes (en, vi)
-│   │   ├── layout.tsx   # Root layout with i18n
-│   │   ├── page.tsx     # Home page
-│   │   └── */page.tsx   # Feature pages
-│   ├── api/             # API routes (video-info, download, proxy-download)
-│   └── globals.css      # Lunar theme CSS variables
-├── components/          # React components (client & server)
-├── dictionaries/        # i18n JSON files (en.json, vi.json)
-├── get-dictionary.ts    # Dictionary loader with server-only
-└── proxy.ts             # Middleware for locale detection
+│   ├── layout.tsx           # Root layout (html/body/Providers only)
+│   ├── (en)/                # English route group (no prefix in URL)
+│   │   ├── layout.tsx       # English layout with Navigation
+│   │   ├── page.tsx         # English home page
+│   │   ├── clicky-addicty/  # English clicky game
+│   │   │   └── page.tsx
+│   │   └── converter/       # English video converter
+│   │       └── page.tsx
+│   ├── vi/                  # Vietnamese routes (with /vi prefix)
+│   │   ├── layout.tsx       # Vietnamese layout with Navigation
+│   │   ├── page.tsx         # Vietnamese home page
+│   │   ├── clicky-addicty/  # Vietnamese clicky game
+│   │   │   └── page.tsx
+│   │   └── converter/       # Vietnamese video converter
+│   │       └── page.tsx
+│   ├── api/                 # API routes (video-info, download, proxy-download)
+│   └── globals.css          # Lunar theme CSS variables
+├── components/              # React components (client & server)
+├── dictionaries/            # i18n JSON files (en.json, vi.json)
+├── get-dictionary.ts        # Dictionary loader with server-only
+└── proxy.ts                 # Middleware for locale detection
 ```
 
 ## Development Workflow
 
 ### Commands (uses pnpm)
 ```bash
-pnpm dev          # Start dev server on localhost:3000
-pnpm build        # Production build
+pnpm dev          # Start development server
+pnpm build        # Build for production
 pnpm start        # Start production server
 pnpm lint         # Run ESLint
 ```
 
 ### Adding New Features
-1. **New page with i18n**: Create in `src/app/[lang]/feature-name/page.tsx`, update dictionaries, add nav link
+1. **New page with i18n**: Create both `src/app/(en)/feature-name/page.tsx` (English) and `src/app/vi/feature-name/page.tsx` (Vietnamese), update dictionaries, add nav links using `getLink()` helper in Navigation
 2. **New translations**: Add keys to both `src/dictionaries/en.json` and `vi.json`
 3. **New component**: Determine if client (`"use client"`) or server component based on interactivity
 4. **Styling**: Use Lunar theme CSS variables, not hardcoded colors
+5. **Navigation links**: Use `getLink(path)` helper in Navigation component to generate correct URLs for current language
+6. **Layout hierarchy**: Root layout has html/body/Providers only. (en)/ and vi/ layouts add Navigation and page-specific wrappers
 
 ### Path Aliases
 - `@/*` maps to `src/*` (configured in tsconfig.json)
@@ -83,9 +107,11 @@ pnpm lint         # Run ESLint
 ## Critical Conventions
 - **Never hardcode colors**: Always use `var(--color-lunar-*)` variables
 - **i18n everywhere**: All user-facing strings must come from dictionary files
-- **Params are async**: Always `await params` in Next.js 16 pages/layouts
+- **Duplicate pages for both locales**: Every page must exist in both root (English) and `/vi` (Vietnamese)
+- **No dynamic params**: Pages don't use `[lang]` params - locale is determined by route structure
 - **Client components receive dict**: Server components fetch dictionaries, pass to client as props
 - **No yt-dlp on Vercel**: Video features are local development only
+- **English = no prefix**: Root paths are English (`/`, `/converter`), only Vietnamese uses `/vi` prefix
 
 ## Image Configuration
 `next.config.ts` allows all remote image sources (`hostname: "**"`). Optimize if restricting domains later.

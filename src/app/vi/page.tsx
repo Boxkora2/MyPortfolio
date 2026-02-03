@@ -2,13 +2,8 @@ import Image from "next/image";
 import { getDictionary } from "../../get-dictionary";
 import { FeaturedSection } from "@/components/FeaturedSection";
 
-export default async function Home({
-  params,
-}: {
-  params: Promise<{ lang: "en" | "vi" }>;
-}) {
-  const { lang } = await params;
-  const dict = await getDictionary(lang);
+export default async function ViHome() {
+  const dict = await getDictionary("vi");
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 relative overflow-hidden">

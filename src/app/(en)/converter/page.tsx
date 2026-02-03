@@ -1,10 +1,6 @@
 import { VideoDownloader } from "@/components/VideoDownloader";
 
-export default async function ConverterPage({
-  params,
-}: {
-  params: Promise<{ lang: "en" | "vi" }>;
-}) {
+export default async function ConverterPage() {
   return (
     <main className="min-h-screen py-[80px] px-4 sm:px-6 relative overflow-hidden flex flex-col items-center">
          {/* Background effects */}

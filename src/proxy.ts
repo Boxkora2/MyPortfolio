@@ -19,32 +19,26 @@ function getLocale(request: NextRequest): string {
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
-  // Check if there is any supported locale in the pathname
-  const pathnameIsMissingLocale = locales.every(
-    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
-  );
-
-  if (pathnameIsMissingLocale) {
-    const locale = getLocale(request);
-    
-    if (locale === defaultLocale) {
-      return NextResponse.rewrite(
-        new URL(
-          `/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}`,
-          request.url
-        )
-      );
-    }
-
-    // e.g. incoming request is /products
-    // The new URL is now /en/products
+  // Check if pathname already has /vi prefix
+  const hasViPrefix = pathname.startsWith("/vi/") || pathname === "/vi";
+  
+  // If path has /vi, it's Vietnamese - no action needed
+  if (hasViPrefix) {
+    return NextResponse.next();
+  }
+  
+  // For paths without /vi prefix, detect if user prefers Vietnamese
+  const preferredLocale = getLocale(request);
+  
+  // If user prefers Vietnamese and path doesn't have /vi, redirect to /vi
+  if (preferredLocale === "vi" && !hasViPrefix) {
     return NextResponse.redirect(
-      new URL(
-        `/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}`,
-        request.url
-      )
+      new URL(`/vi${pathname}`, request.url)
     );
   }
+  
+  // Otherwise, serve as English (no prefix needed)
+  return NextResponse.next();
 }
 
 export const config = {
