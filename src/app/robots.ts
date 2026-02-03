@@ -1,6 +1,10 @@
 import { MetadataRoute } from 'next'
  
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_BASE_URL || 'https://korachoco.cv'
+  
   return {
     rules: [
       {
@@ -9,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/'],
       },
     ],
-    sitemap: 'https://korachoco.cv/sitemap.xml',
+    sitemap: `${baseUrl}/sitemap.xml`,
   }
 }
