@@ -97,6 +97,16 @@ export function FeaturedSection() {
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={() => handleMouseLeave(index)}
               >
+                {/* Video */}
+                <video
+                  ref={(el) => { videoRefs.current[index] = el; }}
+                  src={project.videoUrl}
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+
                 {/* Thumbnail */}
                 <img
                   src={project.thumbnailUrl}
@@ -105,27 +115,6 @@ export function FeaturedSection() {
                     hoveredProject === index ? "opacity-0" : "opacity-100"
                   }`}
                 />
-                
-                {/* Video */}
-                <video
-                  ref={(el) => { videoRefs.current[index] = el; }}
-                  src={project.videoUrl}
-                  muted
-                  loop
-                  playsInline
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-                    hoveredProject === index ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-
-                {/* Play Overlay */}
-                <div className={`absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity duration-300 ${
-                  hoveredProject === index ? "opacity-0" : "opacity-100"
-                }`}>
-                  <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-black border-b-8 border-b-transparent ml-1"></div>
-                  </div>
-                </div>
               </div>
 
               {/* Project Info */}
