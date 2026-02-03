@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getDictionary } from "../../get-dictionary";
+import { FeaturedSection } from "@/components/FeaturedSection";
 
 export default async function Home({
   params,
@@ -77,6 +78,11 @@ export default async function Home({
                </p>
              </section>
            </div>
+        </div>
+
+        {/* Featured Projects & Social Links Section */}
+        <div className="mt-16">
+          <FeaturedSection />
         </div>
 
         {/* Footer Decor */}

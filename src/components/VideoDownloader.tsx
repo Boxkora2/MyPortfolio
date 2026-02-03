@@ -115,6 +115,14 @@ export function VideoDownloader() {
         <p className="text-[var(--color-lunar-muted)]">
             Download videos from YouTube, Facebook, TikTok, Instagram & more in high quality.
         </p>
+        
+        {/* Local Only Notice */}
+        <div className="mt-4 mx-auto max-w-2xl bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+          <p className="text-yellow-500 text-sm font-medium flex items-center justify-center gap-2">
+            <span className="text-lg">⚠️</span>
+            <span>This feature only works in local development environment</span>
+          </p>
+        </div>
       </div>
 
       {/* Input Section */}
