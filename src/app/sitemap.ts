@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   
   return [
-    // --- English Routes ---
+    // --- English Pages ---
     {
       url: baseUrl,
       lastModified: currentDate,
@@ -46,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: getAlternates('/converter'),
     },
 
-    // --- Vietnamese Routes ---
+    // --- Vietnamese Pages ---
     {
       url: `${baseUrl}/vi`,
       lastModified: currentDate,
