@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { FaGithub, FaInstagram, FaExternalLinkAlt } from "react-icons/fa";
+import { FaGithub, FaInstagram, FaExternalLinkAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 
 interface Project {
   title: string;
@@ -54,7 +54,7 @@ export function FeaturedSection() {
   return (
     <div className="w-full bg-[var(--color-lunar-card)] border border-[var(--color-lunar-border)] rounded-2xl p-8 shadow-2xl">
       {/* Social Links Section */}
-      <div className="flex justify-center gap-6 mb-10 pb-8 border-b border-[var(--color-lunar-border)]">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 pb-8 border-b border-[var(--color-lunar-border)]">
         <a
           href="https://github.com/Boxkora2" // Replace with your GitHub URL
           target="_blank"
@@ -73,6 +73,22 @@ export function FeaturedSection() {
         >
           <FaInstagram className="text-2xl text-pink-500 group-hover:scale-110 transition-transform" />
           <span className="font-medium">Instagram</span>
+        </a>
+
+        <a
+          href="tel:+84942577724"
+          className="group flex items-center gap-3 px-6 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-green-500 hover:bg-green-500/10 transition-all duration-300"
+        >
+          <FaPhone className="text-2xl text-green-500 group-hover:scale-110 transition-transform" />
+          <span className="font-medium">Phone</span>
+        </a>
+
+        <a
+          href="mailto:vothanhphat0710@gmail.com"
+          className="group flex items-center gap-3 px-6 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-blue-500 hover:bg-blue-500/10 transition-all duration-300"
+        >
+          <FaEnvelope className="text-2xl text-blue-500 group-hover:scale-110 transition-transform" />
+          <span className="font-medium">Email</span>
         </a>
       </div>
 
