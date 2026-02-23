@@ -17,6 +17,15 @@
   "nav": {
     "home": "MyPortfolio",
     "clicky": "Clicky Addicty",
+    "cv": "My CV",
     "converter": "Converter"
+  },
+  "cv": {
+    "title": "My Curriculum Vitae",
+    "subtitle": "Professional Resume 2026",
+    "download": "Download CV",
+    "view_full": "View Full Size",
+    "updated": "Last Updated: February 2026",
+    "description": "Explore my professional journey, skills, and achievements. Click to view in full size or download for your records."
   }
 }

@@ -17,6 +17,15 @@
   "nav": {
     "home": "Trang Chủ",
     "clicky": "Nghiện Click",
+    "cv": "Hồ Sơ",
     "converter": "Công Cụ Chuyển Đổi"
+  },
+  "cv": {
+    "title": "Sơ Yếu Lý Lịch",
+    "subtitle": "Hồ Sơ Chuyên Nghiệp 2026",
+    "download": "Tải Xuống CV",
+    "view_full": "Xem Kích Thước Đầy Đủ",
+    "updated": "Cập Nhật Lần Cuối: Tháng 2 Năm 2026",
+    "description": "Khám phá hành trình nghề nghiệp, kỹ năng và thành tựu của tôi. Nhấp để xem kích thước đầy đủ hoặc tải xuống."
   }
 }
