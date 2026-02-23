@@ -25,7 +25,7 @@ export function FeaturedSection() {
       description: "Description of your first project"
     },
     {
-      title: "NexLearn",
+      title: "NexLearn - On going project",
       url: "https://courses.korachoco.cv/", // Replace with your project URL
       videoUrl: "/demo_project_video/project2.mp4", // Replace with your video path
       thumbnailUrl: "/demo_project_video/project2-thumb.png", // Replace with your thumbnail
