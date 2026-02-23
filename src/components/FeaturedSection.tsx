@@ -54,42 +54,52 @@ export function FeaturedSection() {
   return (
     <div className="w-full bg-[var(--color-lunar-card)] border border-[var(--color-lunar-border)] rounded-2xl p-8 shadow-2xl">
       {/* Social Links Section */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 pb-8 border-b border-[var(--color-lunar-border)]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 pb-8 border-b border-[var(--color-lunar-border)]">
         <a
-          href="https://github.com/Boxkora2" // Replace with your GitHub URL
+          href="https://github.com/Boxkora2"
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex items-center gap-3 px-6 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-[var(--color-lunar-primary)] hover:bg-[var(--color-lunar-primary)]/10 transition-all duration-300"
+          className="group flex flex-col items-start justify-center gap-1 px-5 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-[var(--color-lunar-primary)] hover:bg-[var(--color-lunar-primary)]/10 transition-all duration-300"
         >
-          <FaGithub className="text-2xl group-hover:scale-110 transition-transform" />
-          <span className="font-medium">GitHub</span>
+          <div className="flex items-center gap-2">
+            <FaGithub className="text-lg group-hover:scale-110 transition-transform" />
+            <span className="font-medium text-sm text-[var(--color-lunar-muted)]">GitHub</span>
+          </div>
+          <span className="font-mono text-sm truncate w-full">@Boxkora2</span>
         </a>
         
         <a
-          href="https://www.instagram.com/box_kora/" // Replace with your Facebook URL
+          href="https://www.instagram.com/box_kora/"
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex items-center gap-3 px-6 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-pink-500 hover:bg-pink-500/10 transition-all duration-300"
+          className="group flex flex-col items-start justify-center gap-1 px-5 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-pink-500 hover:bg-pink-500/10 transition-all duration-300"
         >
-          <FaInstagram className="text-2xl text-pink-500 group-hover:scale-110 transition-transform" />
-          <span className="font-medium">Instagram</span>
+          <div className="flex items-center gap-2">
+            <FaInstagram className="text-lg text-pink-500 group-hover:scale-110 transition-transform" />
+            <span className="font-medium text-sm text-[var(--color-lunar-muted)]">Instagram</span>
+          </div>
+          <span className="font-mono text-sm truncate w-full">@box_kora</span>
         </a>
 
-        <a
-          href="tel:+84942577724"
-          className="group flex items-center gap-3 px-6 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-green-500 hover:bg-green-500/10 transition-all duration-300"
+        <div
+          className="group flex flex-col items-start justify-center gap-1 px-5 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-green-500 hover:bg-green-500/10 transition-all duration-300"
         >
-          <FaPhone className="text-2xl text-green-500 group-hover:scale-110 transition-transform" />
-          <span className="font-medium">Phone</span>
-        </a>
+          <div className="flex items-center gap-2">
+            <FaPhone className="text-lg text-green-500 group-hover:scale-110 transition-transform" />
+            <span className="font-medium text-sm text-[var(--color-lunar-muted)]">Phone</span>
+          </div>
+          <span className="font-mono text-sm select-all cursor-text">+84 942 577 724</span>
+        </div>
 
-        <a
-          href="mailto:vothanhphat0710@gmail.com"
-          className="group flex items-center gap-3 px-6 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-blue-500 hover:bg-blue-500/10 transition-all duration-300"
+        <div
+          className="group flex flex-col items-start justify-center gap-1 px-5 py-3 bg-[var(--color-lunar-bg)] border border-[var(--color-lunar-border)] rounded-lg hover:border-blue-500 hover:bg-blue-500/10 transition-all duration-300"
         >
-          <FaEnvelope className="text-2xl text-blue-500 group-hover:scale-110 transition-transform" />
-          <span className="font-medium">Email</span>
-        </a>
+          <div className="flex items-center gap-2">
+            <FaEnvelope className="text-lg text-blue-500 group-hover:scale-110 transition-transform" />
+            <span className="font-medium text-sm text-[var(--color-lunar-muted)]">Email</span>
+          </div>
+          <span className="font-mono text-xs sm:text-sm select-all cursor-text break-all">vothanhphat0710@gmail.com</span>
+        </div>
       </div>
 
       {/* Featured Projects Section */}
