@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import youtubeDl from "youtube-dl-exec";
-import { exec } from "child_process";
-import { promisify } from "util";
 import { existsSync } from "fs";
 
-const execAsync = promisify(exec);
+// Minimal type for yt-dlp format objects
+interface RawFormat {
+  format_id?: string;
+  ext?: string;
+  height?: number;
+  vcodec?: string;
+  acodec?: string;
+  protocol?: string;
+  format_note?: string;
+  url?: string;
+  filesize?: number;
+  filesize_approx?: number;
+}
 
 export const maxDuration = 300; // 5 minutes for large downloads
 export const dynamic = 'force-dynamic';
@@ -62,7 +72,7 @@ export async function POST(request: NextRequest) {
       ext = 'mp3';
     } else {
       // For video, use the exact format ID (already has video+audio combined)
-      const videoFormat = info.formats?.find((f: any) => f.format_id === formatId);
+      const videoFormat = (info.formats as RawFormat[] | undefined)?.find((f: RawFormat) => f.format_id === formatId);
       if (videoFormat) {
         ext = videoFormat.ext || 'mp4';
         format = formatId; // Use exact format ID, no merging
@@ -121,14 +131,14 @@ export async function POST(request: NextRequest) {
         quality,
         isAudio,
       });
-    } catch (urlError: any) {
+    } catch (urlError: unknown) {
       console.error('[Download API] Error getting URL:', urlError);
       throw urlError;
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Download API] Error:", error);
-    console.error("[Download API] Error message:", error.message);
+    console.error("[Download API] Error message:", error instanceof Error ? error.message : String(error));
     
     return NextResponse.json(
       { error: "Failed to generate download link. Please try again." },

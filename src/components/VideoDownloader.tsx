@@ -53,8 +53,8 @@ export function VideoDownloader() {
       }
 
       setVideoInfo(data.data);
-    } catch (err: any) {
-      setError(err.message || "Oops! That link looks like it wandered off the map. Please feed me a valid link!");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Oops! That link looks like it wandered off the map. Please feed me a valid link!");
     } finally {
       setLoading(false);
     }
@@ -92,9 +92,9 @@ export function VideoDownloader() {
       document.body.removeChild(link);
       
       console.log("Download started for:", data.filename);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Download error:", err);
-      alert(err.message || "Failed to download. Please try again.");
+      alert(err instanceof Error ? err.message : "Failed to download. Please try again.");
     } finally {
       setDownloading(null);
     }

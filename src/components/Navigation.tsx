@@ -4,9 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
 
+import type { getDictionary } from "@/get-dictionary";
+type Dictionary = Awaited<ReturnType<typeof getDictionary>>;
+
 interface NavigationProps {
   lang: string;
-  dict: any;
+  dict: Dictionary;
 }
 
 export function Navigation({ lang, dict }: NavigationProps) {

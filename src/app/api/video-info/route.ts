@@ -2,6 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import youtubeDl from "youtube-dl-exec";
 import { existsSync } from "fs";
 
+// Minimal type for yt-dlp format objects
+interface RawFormat {
+  format_id?: string;
+  ext?: string;
+  height?: number;
+  vcodec?: string;
+  acodec?: string;
+  protocol?: string;
+  format_note?: string;
+  url?: string;
+  filesize?: number;
+  filesize_approx?: number;
+}
+
+interface VideoFormatEntry {
+  format_id: string;
+  ext: string;
+  resolution: string;
+  quality: string;
+  filesize: number | null;
+  format_note: string;
+  hasAudio: boolean;
+}
+
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
@@ -61,7 +85,7 @@ export async function POST(request: NextRequest) {
     console.log("[API] Video info fetched successfully");
 
     // Extract formats for audio and video (optimized)
-    const formats = info.formats || [];
+    const formats = (info.formats || []) as RawFormat[];
     
     // Audio formats - MP3 only, use best audio
     const audioFormats = [
@@ -77,10 +101,10 @@ export async function POST(request: NextRequest) {
     // Video formats - Only get PROGRESSIVE formats (not HLS/DASH) with both video AND audio
     // Progressive formats have direct URLs and can be downloaded as single files
     const videoQualities = [2160, 1440, 1080, 720, 480, 360, 240, 144];
-    const videoFormats: any[] = [];
+    const videoFormats: VideoFormatEntry[] = [];
     
     // Filter for progressive formats only (no streaming protocols)
-    const progressiveFormats = formats.filter((f: any) => 
+    const progressiveFormats = formats.filter((f: RawFormat) => 
       f.vcodec !== "none" && 
       f.acodec !== "none" && // Must have both video and audio
       f.protocol === "https" && // Direct HTTPS download
@@ -94,12 +118,12 @@ export async function POST(request: NextRequest) {
     
     // Get formats for each quality
     for (const quality of videoQualities) {
-      const format = progressiveFormats.find((f: any) => f.height === quality);
+      const format = progressiveFormats.find((f: RawFormat) => f.height === quality);
       
       if (format && videoFormats.length < 6) {
         videoFormats.push({
-          format_id: format.format_id,
-          ext: format.ext || 'mp4',
+          format_id: format.format_id ?? '',
+          ext: format.ext ?? 'mp4',
           resolution: `${format.height}p`,
           quality: `${format.height}p`,
           filesize: format.filesize || format.filesize_approx || null,
@@ -112,12 +136,12 @@ export async function POST(request: NextRequest) {
     // If we still don't have enough, add any remaining progressive formats
     if (videoFormats.length < 3) {
       const additionalFormats = progressiveFormats
-        .filter((f: any) => !videoFormats.find(vf => vf.format_id === f.format_id))
-        .sort((a: any, b: any) => (b.height || 0) - (a.height || 0))
+        .filter((f: RawFormat) => !videoFormats.find(vf => vf.format_id === f.format_id))
+        .sort((a: RawFormat, b: RawFormat) => (b.height || 0) - (a.height || 0))
         .slice(0, 6 - videoFormats.length)
-        .map((f: any) => ({
-          format_id: f.format_id,
-          ext: f.ext || 'mp4',
+        .map((f: RawFormat) => ({
+          format_id: f.format_id ?? '',
+          ext: f.ext ?? 'mp4',
           resolution: f.height ? `${f.height}p` : "SD",
           quality: f.height ? `${f.height}p` : "SD",
           filesize: f.filesize || f.filesize_approx || null,
@@ -133,12 +157,12 @@ export async function POST(request: NextRequest) {
     // Other formats (webm, 3gp, etc.) - simplified
     const otherExts = ["webm", "3gp"];
     const otherFormats = otherExts
-      .map(ext => formats.find((f: any) => f.ext === ext && f.vcodec !== "none"))
-      .filter(Boolean)
+      .map(ext => formats.find((f: RawFormat) => f.ext === ext && f.vcodec !== "none"))
+      .filter((f): f is RawFormat => f !== undefined)
       .slice(0, 2)
-      .map((f: any) => ({
-        format_id: f.format_id,
-        ext: f.ext,
+      .map((f: RawFormat) => ({
+        format_id: f.format_id ?? '',
+        ext: f.ext ?? '',
         quality: f.height ? `${f.height}p` : "Auto",
         filesize: f.filesize || f.filesize_approx || null,
         format_note: f.format_note || "",
@@ -159,17 +183,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[API] Error fetching video info:", error);
-    console.error("[API] Error message:", error.message);
-    console.error("[API] Error stack:", error.stack);
+    console.error("[API] Error message:", error instanceof Error ? error.message : String(error));
+    console.error("[API] Error stack:", error instanceof Error ? error.stack : "");
     
     // Handle common errors
-    if (error.message?.includes("Unsupported URL")) {
+    if (error instanceof Error && error.message?.includes("Unsupported URL")) {
       return NextResponse.json({ error: "This platform is not supported" }, { status: 400 });
     }
-    
-    if (error.message?.includes("Video unavailable") || error.message?.includes("Private video")) {
+
+    if (error instanceof Error && (error.message?.includes("Video unavailable") || error.message?.includes("Private video"))) {
       return NextResponse.json({ error: "Video is unavailable or private" }, { status: 400 });
     }
 

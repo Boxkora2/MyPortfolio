@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
       headers,
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Proxy] Error:", error);
     return NextResponse.json(
       { error: "Failed to stream file" },
