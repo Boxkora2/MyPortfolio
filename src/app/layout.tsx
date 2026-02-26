@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "../components/Providers";
 import "./globals.css";
 
@@ -16,25 +18,25 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://korachoco.cv"),
   title: {
-    default: "My Portfolio | Web Developer",
-    template: "%s | My Portfolio"
+    default: "Vo Thanh Phat | Frontend Developer",
+    template: "%s | Vo Thanh Phat"
   },
-  description: "Web Developer Portfolio - Building modern web applications with passion and expertise",
-  keywords: ["web developer", "portfolio", "react", "next.js", "typescript", "frontend developer"],
-  authors: [{ name: "Boxkora" }],
-  creator: "Boxkora",
+  description: "Portfolio of Vo Thanh Phat — Frontend Developer specialising in Next.js, TypeScript, and modern web interfaces.",
+  keywords: ["Vo Thanh Phat", "frontend developer", "web developer", "portfolio", "react", "next.js", "typescript"],
+  authors: [{ name: "Vo Thanh Phat" }],
+  creator: "Vo Thanh Phat",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://korachoco.cv",
-    siteName: "My Portfolio",
-    title: "My Portfolio | Web Developer",
-    description: "Web Developer Portfolio - Building modern web applications with passion and expertise",
+    siteName: "Vo Thanh Phat",
+    title: "Vo Thanh Phat | Frontend Developer",
+    description: "Portfolio of Vo Thanh Phat — Frontend Developer specialising in Next.js, TypeScript, and modern web interfaces.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "My Portfolio | Web Developer",
-    description: "Web Developer Portfolio - Building modern web applications with passion and expertise",
+    title: "Vo Thanh Phat | Frontend Developer",
+    description: "Portfolio of Vo Thanh Phat — Frontend Developer specialising in Next.js, TypeScript, and modern web interfaces.",
   },
   robots: {
     index: true,
@@ -62,6 +64,8 @@ export default async function RootLayout({
       >
         <Providers>
             {children}
+            <Analytics />
+            <SpeedInsights />
         </Providers>
       </body>
     </html>

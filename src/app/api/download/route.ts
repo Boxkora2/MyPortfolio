@@ -9,12 +9,16 @@ const execAsync = promisify(exec);
 export const maxDuration = 300; // 5 minutes for large downloads
 export const dynamic = 'force-dynamic';
 
-// Configure youtube-dl-exec to use system yt-dlp
-const binaryPath = 'C:\\Users\\kurot\\AppData\\Local\\Microsoft\\WinGet\\Links\\yt-dlp.exe';
-const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
-const binaryExists = !isProduction && existsSync(binaryPath);
+// Derive the options type directly from the library — no `any`, no import guessing
+type YtOptions = NonNullable<Parameters<typeof youtubeDl>[1]>;
 
-const ytDlp = (url: string, options: any) => {
+// Configure youtube-dl-exec to use system yt-dlp
+// Binary path comes from .env.local — never hardcoded in source
+const binaryPath = process.env.YTDLP_PATH ?? '';
+const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+const binaryExists = !isProduction && binaryPath.length > 0 && existsSync(binaryPath);
+
+const ytDlp = (url: string, options: YtOptions) => {
   if (!binaryExists) {
     throw new Error('yt-dlp binary not available in this environment');
   }

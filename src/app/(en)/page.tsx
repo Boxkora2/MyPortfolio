@@ -2,11 +2,28 @@ import Image from "next/image";
 import { getDictionary } from "../../get-dictionary";
 import { FeaturedSection } from "@/components/FeaturedSection";
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Vo Thanh Phat",
+  url: "https://korachoco.cv",
+  jobTitle: "Frontend Developer",
+  description: "Frontend Developer specialising in Next.js, TypeScript, and modern web interfaces.",
+  sameAs: [
+    "https://github.com/korachoco",
+    "https://linkedin.com/in/korachoco",
+  ],
+};
+
 export default async function Home() {
   const dict = await getDictionary("en");
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Background Decor (Lunar Theme) */}
       <div className="absolute top-0 right-0 p-10 opacity-20 pointer-events-none">
         <div className="w-64 h-64 bg-[var(--color-lunar-primary)] rounded-full blur-[100px]"></div>
@@ -82,7 +99,7 @@ export default async function Home() {
 
         {/* Footer Decor */}
         <div className="mt-16 text-center opacity-50 text-sm">
-          <p>Made by Boxkora™</p>
+          <p>Made by Vo Thanh Phat</p>
         </div>
       </div>
     </main>

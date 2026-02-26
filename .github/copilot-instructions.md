@@ -1,7 +1,19 @@
-# AI Coding Agent Instructions for MyPortfolio
+﻿# AI Coding Agent Instructions for MyPortfolio  Vo Thanh Phat
 
 ## Project Overview
-Next.js 16 portfolio site with **internationalization (i18n)**, custom Lunar/Solar theme system, and video downloader utility. Uses App Router with TypeScript and Tailwind CSS.
+Personal portfolio of **Vo Thanh Phat** (Frontend Developer). Next.js 16 portfolio site with **internationalization (i18n)**, custom Lunar/Solar theme system, and a local-only video downloader utility. Uses App Router with TypeScript and Tailwind CSS, deployed at `https://korachoco.cv`.
+
+---
+
+## Identity & Branding
+- **Real name**: Vo Thanh Phat / Võ Thanh Phát (Vietnamese)
+- **Domain**: `https://korachoco.cv`
+- **Role**: Frontend Developer
+- All metadata (`title`, `creator`, `author`, OG tags, JSON-LD) must use "Vo Thanh Phat"  never "Boxkora" or "My Portfolio"
+- The `en.json` dictionary key `home.title` = `"Vo Thanh Phat"`, `home.role` = `"Frontend Developer"`
+- The `vi.json` dictionary key `home.title` = `"Võ Thanh Phát"`, `home.role` = `"Lập Trình Viên Frontend"`
+
+---
 
 ## Architecture & Key Patterns
 
@@ -10,77 +22,96 @@ Next.js 16 portfolio site with **internationalization (i18n)**, custom Lunar/Sol
   - English (default): `domain.com`, `domain.com/converter`, `domain.com/clicky-addicty`
   - Vietnamese: `domain.com/vi`, `domain.com/vi/converter`, `domain.com/vi/clicky-addicty`
 - **Middleware pattern**: `src/proxy.ts` handles locale detection via `@formatjs/intl-localematcher` and `negotiator`
-  - Matcher config: `/((?!_next|api|favicon.ico|.*\..*).*)`excludes internal paths, API routes, and static files
+  - Matcher config: `/((?!_next|api|favicon.ico|.*\..*).*)`   excludes internal paths, API routes, and static files
   - Detects user language preference and redirects to `/vi` if Vietnamese preferred
   - English pages served directly without prefix (no redirect/rewrite needed)
 - **Dictionary system**: Use `getDictionary(locale)` from `src/get-dictionary.ts` to load translations from `src/dictionaries/{en,vi}.json`
-  - Locale parameter is optional, defaults to "en"
-  - Each layout (root and vi/) fetches its own dictionary
+  - Locale parameter is optional, defaults to `"en"`
+  - Each layout (`(en)/` and `vi/`) fetches its own dictionary
 - **Server-only imports**: Dictionary loading uses `"server-only"` package to prevent client-side bundling
 - **Language switching**: Navigation component has `getOtherLangLink()` helper
-  - English → Vietnamese: adds `/vi` prefix to current path
-  - Vietnamese → English: removes `/vi` prefix from current path
-  - Example: `/converter` ↔ `/vi/converter`, `/` ↔ `/vi`
+  - English  Vietnamese: adds `/vi` prefix
+  - Vietnamese  English: removes `/vi` prefix
+  - Example: `/converter`  `/vi/converter`, `/`  `/vi`
 
-Example: Adding a new page requires creating both `src/app/new-page/page.tsx` (English) and `src/app/vi/new-page/page.tsx` (Vietnamese), plus updating dictionary files.
+Adding a new page requires:
+1. `src/app/(en)/feature-name/page.tsx` (English)
+2. `src/app/vi/feature-name/page.tsx` (Vietnamese)
+3. Update both `en.json` and `vi.json`
+
+### SEO & Structured Data
+- **hreflang**: Both `(en)/layout.tsx` and `vi/layout.tsx` export `metadata.alternates` with `canonical` and `languages` pointing to the correct locales
+- **JSON-LD**: `(en)/page.tsx` injects a `Person` schema via `<script type="application/ld+json">`  update `sameAs` with real GitHub/LinkedIn URLs
+- **Root layout** (`app/layout.tsx`) holds all global metadata: `title`, `description`, `openGraph`, `twitter`, `robots`  all using "Vo Thanh Phat"
+- **robots.ts** and sitemap files are in `app/(sitemaps)/`
 
 ### Custom Theme System ("Lunar Theme")
-- **CSS variables in `src/app/globals.css`**: All colors use `var(--color-lunar-*)` tokens, NOT direct Tailwind classes
+- **CSS variables in `src/app/globals.css`**: All colors use `var(--color-lunar-*)` tokens
 - **Available color tokens**: `--color-lunar-bg`, `--color-lunar-card`, `--color-lunar-primary`, `--color-lunar-secondary`, `--color-lunar-gold`, `--color-lunar-text`, `--color-lunar-muted`, `--color-lunar-glow`
 - **Light/dark modes**: `:root` (light/solar) and `.dark` (lunar) defined in globals.css
-- **Theme provider**: `next-themes` manages theme state in `src/components/Providers.tsx` (attribute="class", defaultTheme="dark")
-- **Usage**: Always use CSS variables like `bg-[var(--color-lunar-card)]`, never hardcode colors
+- **Theme provider**: `next-themes` in `src/components/Providers.tsx` (`attribute="class"`, `defaultTheme="dark"`)
+- **Usage**: Always `bg-[var(--color-lunar-card)]`  never hardcode hex colors
 
 ### Component Patterns
-- **Client components**: Use `"use client"` directive for interactivity (Navigation, ThemeToggle, FeaturedSection, ClickyGame, VideoDownloader)
-  - Example: `Navigation` receives `lang` and `dict` as props from server layout
-  - State management: Use React hooks (useState, useRef) for interactive features
-  - Navigation has helper functions: `getLink(path)` adds `/vi` for Vietnamese, `getOtherLangLink()` toggles languages
-- **Server components**: Pages and layouts are async server components that fetch dictionaries
-  - Root layout example: `export default async function RootLayout({ children }: { children: React.ReactNode })`
-  - No params needed - locale determined by route structure (root = English, /vi = Vietnamese)
-- **No params handling needed**: Unlike old `[lang]` structure, pages don't receive dynamic params
+- **Client components**: `"use client"` for Navigation, ThemeToggle, FeaturedSection, ClickyGame, VideoDownloader
+  - `Navigation` receives `lang` and `dict` as props from server layout
+  - `getLink(path)` adds `/vi` prefix for Vietnamese, `getOtherLangLink()` toggles languages
+- **Server components**: Pages and layouts are async RSCs that fetch dictionaries
   - Root pages: `const dict = await getDictionary("en");`
   - Vietnamese pages: `const dict = await getDictionary("vi");`
-- **Dictionary passing**: Each layout fetches dictionary and passes to Navigation
-  - Root layout: `const dict = await getDictionary("en");` → `<Navigation lang="en" dict={dict} />`
-  - Vi layout: `const dict = await getDictionary("vi");` → `<Navigation lang="vi" dict={dict} />`
+- **Layout hierarchy**: Root `layout.tsx` has html/body/Providers only. `(en)/` and `vi/` layouts add Navigation.
 
 ### API Routes & Video Downloader
-- **Local-only feature**: Video converter (`src/app/api/video-info/route.ts`) uses `youtube-dl-exec` with hardcoded local binary path `C:\\Users\\kurot\\AppData\\Local\\Microsoft\\WinGet\\Links\\yt-dlp.exe`
-- **Supported platforms**: YouTube, TikTok, Instagram, Facebook, Vimeo, Twitter/X (validated via URL regex)
-- **Production check**: Routes detect Vercel via `process.env.VERCEL === '1'` and return 501 error explaining feature is local-only
-- **Deployment alternatives**: For video feature, use Docker/VPS platforms (Railway, Render, DigitalOcean) instead of serverless
-- **Timeout config**: Uses `export const maxDuration = 60;` and `export const dynamic = 'force-dynamic';`
-- **Format filtering**: Only returns progressive MP4 formats (no DASH/HLS) with both video and audio codecs
-- **Error handling**: Specific error messages for unsupported URLs, unavailable videos, and private videos
+- **Local-only feature**: `video-info/route.ts` and `download/route.ts` use `youtube-dl-exec`
+- **Binary path**: Read from `process.env.YTDLP_PATH` (set in `.env.local`)  **never hardcode a path**
+  ```ts
+  const binaryPath = process.env.YTDLP_PATH ?? '';
+  ```
+- **Type safety**: Use derived type  never `any`:
+  ```ts
+  type YtOptions = NonNullable<Parameters<typeof youtubeDl>[1]>;
+  ```
+- **Production guard**: Both routes check `process.env.VERCEL === '1'` and return `501` if true
+- **Supported platforms**: YouTube, TikTok, Instagram, Facebook, Vimeo, Twitter/X
+- **Format filtering**: Progressive MP4 only (no DASH/HLS), both video + audio codecs required
+- **UI notice**: `VideoDownloader.tsx` already shows a yellow warning box for local-only context
+
+---
 
 ## Project Structure
 ```
 src/
-├── app/
-│   ├── layout.tsx           # Root layout (html/body/Providers only)
-│   ├── (en)/                # English route group (no prefix in URL)
-│   │   ├── layout.tsx       # English layout with Navigation
-│   │   ├── page.tsx         # English home page
-│   │   ├── clicky-addicty/  # English clicky game
-│   │   │   └── page.tsx
-│   │   └── converter/       # English video converter
-│   │       └── page.tsx
-│   ├── vi/                  # Vietnamese routes (with /vi prefix)
-│   │   ├── layout.tsx       # Vietnamese layout with Navigation
-│   │   ├── page.tsx         # Vietnamese home page
-│   │   ├── clicky-addicty/  # Vietnamese clicky game
-│   │   │   └── page.tsx
-│   │   └── converter/       # Vietnamese video converter
-│   │       └── page.tsx
-│   ├── api/                 # API routes (video-info, download, proxy-download)
-│   └── globals.css          # Lunar theme CSS variables
-├── components/              # React components (client & server)
-├── dictionaries/            # i18n JSON files (en.json, vi.json)
-├── get-dictionary.ts        # Dictionary loader with server-only
-└── proxy.ts                 # Middleware for locale detection
+ app/
+    layout.tsx            # Root layout  global metadata for "Vo Thanh Phat"
+    (en)/
+       layout.tsx        # hreflang alternates + Navigation (lang="en")
+       page.tsx          # Home  JSON-LD Person schema injected here
+       clicky-addicty/
+       converter/
+       cv/
+    vi/
+       layout.tsx        # hreflang alternates + Navigation (lang="vi")
+       page.tsx
+       clicky-addicty/
+       converter/
+    api/                  # video-info, download, proxy-download
+    (sitemaps)/           # sitemap.ts, robots.ts
+    globals.css           # Lunar theme CSS variables
+ components/
+    Navigation.tsx        # "use client"  lang switcher, getLink(), getOtherLangLink()
+    FeaturedSection.tsx   # "use client"
+    VideoDownloader.tsx   # "use client"  local-only feature with warning badge
+    ClickyGame.tsx
+    ThemeToggle.tsx
+    Providers.tsx         # next-themes wrapper
+ dictionaries/
+    en.json               # English strings  home.title = "Vo Thanh Phat"
+    vi.json               # Vietnamese strings  home.title = "Võ Thanh Phát"
+ get-dictionary.ts         # server-only dictionary loader
+ proxy.ts                  # Middleware  locale detection
 ```
+
+---
 
 ## Development Workflow
 
@@ -92,29 +123,94 @@ pnpm start        # Start production server
 pnpm lint         # Run ESLint
 ```
 
+### Environment Variables
+```bash
+# .env.local (never commit  covered by .gitignore via .env*)
+YTDLP_PATH=C:\Users\kurot\AppData\Local\Microsoft\WinGet\Links\yt-dlp.exe
+```
+
 ### Adding New Features
-1. **New page with i18n**: Create both `src/app/(en)/feature-name/page.tsx` (English) and `src/app/vi/feature-name/page.tsx` (Vietnamese), update dictionaries, add nav links using `getLink()` helper in Navigation
-2. **New translations**: Add keys to both `src/dictionaries/en.json` and `vi.json`
-3. **New component**: Determine if client (`"use client"`) or server component based on interactivity
-4. **Styling**: Use Lunar theme CSS variables, not hardcoded colors
-5. **Navigation links**: Use `getLink(path)` helper in Navigation component to generate correct URLs for current language
-6. **Layout hierarchy**: Root layout has html/body/Providers only. (en)/ and vi/ layouts add Navigation and page-specific wrappers
+1. **New page with i18n**: Create in both `(en)/` and `vi/`, update both dictionaries, add nav link using `getLink()`
+2. **New translations**: Add matching keys to both `en.json` and `vi.json`
+3. **New component**: RSC by default; `"use client"` only for interactivity
+4. **Styling**: Lunar CSS variables only  no hardcoded hex colors
+5. **Metadata**: All new pages must use "Vo Thanh Phat" in any title/OG fields
 
 ### Path Aliases
-- `@/*` maps to `src/*` (configured in tsconfig.json)
-- Example: `import { FeaturedSection } from "@/components/FeaturedSection"`
+- `@/*`  `src/*` (tsconfig.json)
+
+---
+
+## CI / Quality
+- GitHub Actions: `.github/workflows/ci.yml`  runs `pnpm lint` + `tsc --noEmit` on every push and PR
+- No `any` types  derive from library signatures
+- No hardcoded file system paths  use environment variables
+
+---
 
 ## Critical Conventions
-- **Never hardcode colors**: Always use `var(--color-lunar-*)` variables
-- **i18n everywhere**: All user-facing strings must come from dictionary files
-- **Duplicate pages for both locales**: Every page must exist in both root (English) and `/vi` (Vietnamese)
-- **No dynamic params**: Pages don't use `[lang]` params - locale is determined by route structure
-- **Client components receive dict**: Server components fetch dictionaries, pass to client as props
-- **No yt-dlp on Vercel**: Video features are local development only
-- **English = no prefix**: Root paths are English (`/`, `/converter`), only Vietnamese uses `/vi` prefix
+- **Never hardcode colors**: Always `var(--color-lunar-*)` variables
+- **Never hardcode paths**: Use `process.env.YTDLP_PATH` for binary paths
+- **Never use `any`**: Derive types  `type T = NonNullable<Parameters<typeof fn>[1]>`
+- **i18n everywhere**: All user-visible strings from dictionary files
+- **Duplicate pages**: Every page must exist in both `(en)/` and `vi/`
+- **No dynamic params**: Locale from route structure, not `[lang]` params
+- **hreflang required**: Every locale layout exports `metadata.alternates`
+- **JSON-LD on homepage**: `Person` schema must stay current (name, url, jobTitle, sameAs)
+- **No yt-dlp on Vercel**: Video feature is local dev only  `.env.local` provides binary path
+- **Identity**: All references must say "Vo Thanh Phat"  never "Boxkora" or "My Portfolio"
+
+---
 
 ## Image Configuration
 `next.config.ts` allows all remote image sources (`hostname: "**"`). Optimize if restricting domains later.
 
 ## Font Setup
-Uses Geist Sans and Geist Mono fonts loaded via `next/font/google` with CSS variables `--font-geist-sans` and `--font-geist-mono`.
+Geist Sans and Geist Mono via `next/font/google`. CSS variables: `--font-geist-sans`, `--font-geist-mono`.
+
+
+---
+
+## Agent Skills
+The following skills are installed in `.github/instructions/` and apply automatically:
+
+### `vercel-react-best-practices`
+**Apply when:** writing/refactoring any component, page, or API route in MyPortfolio.
+Key rules relevant to this project:
+- `async-parallel`  `(en)/page.tsx` and `vi/page.tsx` should use `Promise.all()` if they ever fetch multiple independent data sources
+- `bundle-barrel-imports`  import `getDictionary` directly, never re-export through an index barrel
+- `bundle-dynamic-imports`  use `next/dynamic` for `VideoDownloader` if the `youtube-dl-exec` import grows the client bundle
+- `bundle-defer-third-party`  defer any analytics or chat widgets until after hydration
+- `server-cache-react`  wrap `getDictionary` calls with `React.cache()` to deduplicate per-request
+- `server-serialization`  pass only the required dictionary keys to client components, not the entire dict object
+- `server-parallel-fetching`  if a page ever calls `getDictionary` + another source, run them in parallel
+- `rerender-memo`  memoize `FeaturedSection` items if they re-render on parent state changes
+- `rendering-conditional-render`  use ternary instead of `&&` for optional UI elements in Navigation
+- `rendering-hoist-jsx`  hoist static footer/nav JSX outside component bodies where possible
+- `rendering-hydration-no-flicker`  theme toggle uses `next-themes` with `suppressHydrationWarning`  keep this pattern
+
+### `vercel-composition-patterns`
+**Apply when:** adding new props to Navigation, FeaturedSection, or any new reusable UI component.
+Key rules relevant to this project:
+- `architecture-avoid-boolean-props`  don't add `isVietnamese` boolean to `Navigation`; derive from `lang` prop
+- `state-decouple-implementation`  `Navigation` receives `dict` and `lang` as props from server layout; it should never fetch its own translations
+- `state-context-interface`  if adding a user preferences store, define `{ state, actions, meta }` interface pattern
+- `patterns-explicit-variants`  create locale-specific variant components rather than embedding ternaries for EN vs VI differences
+- `patterns-children-over-render-props`  page layouts should use `children` for content slots, not `renderContent={...}`
+- `react19-no-forwardref`  React 19 is in use; skip `forwardRef`, pass `ref` as plain prop
+
+### `web-design-guidelines`
+**Apply when:** asked to "review my UI", "check accessibility", "audit design", or "check UX".
+Process:
+1. Fetch live rules from `https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md`
+2. Read the target files
+3. Report findings in `file:line` terse format
+
+Key areas to watch in MyPortfolio:
+- **Accessibility**: Navigation links need `aria-current="page"` for active route; language toggle needs `aria-label`
+- **Focus states**: theme toggle and nav links need visible `:focus-visible` outlines matching `--color-lunar-primary`
+- **i18n**: use `Intl.DateTimeFormat` / `Intl.NumberFormat` for locale-aware formatting, not manual strings
+- **Animation**: any Framer Motion animations should respect `prefers-reduced-motion`
+- **Dark Mode**: Lunar theme uses `next-themes` with `attribute="class"`  always use `var(--color-lunar-*)` tokens, never hardcode
+- **Images**: all next/image usages need non-empty `alt` text; project thumbnails should describe the project
+- **hreflang**: both locale layouts export `metadata.alternates`  keep this consistent when adding new pages
