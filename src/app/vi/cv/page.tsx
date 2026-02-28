@@ -1,5 +1,37 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getDictionary } from "../../../get-dictionary";
+
+export const metadata: Metadata = {
+  title: "Sơ Yếu Lý Lịch — Võ Thanh Phát",
+  description:
+    "Xem và tải CV của Võ Thanh Phát — Lập Trình Viên Frontend. Kỹ năng bao gồm Next.js, React, TypeScript, Tailwind CSS và thiết kế UI/UX hiện đại.",
+  keywords: [
+    "CV Võ Thanh Phát",
+    "lý lịch lập trình viên frontend",
+    "next.js developer cv",
+    "web developer resume",
+    "portfolio Võ Thanh Phát",
+  ],
+  alternates: {
+    canonical: "https://korachoco.cv/vi/cv",
+    languages: {
+      en: "https://korachoco.cv/cv",
+      vi: "https://korachoco.cv/vi/cv",
+      "x-default": "https://korachoco.cv/cv",
+    },
+  },
+  openGraph: {
+    type: "profile",
+    locale: "vi_VN",
+    alternateLocale: ["en_US"],
+    url: "https://korachoco.cv/vi/cv",
+    title: "Sơ Yếu Lý Lịch — Võ Thanh Phát | Lập Trình Viên Frontend",
+    description:
+      "CV chuyên nghiệp của Võ Thanh Phát — Lập Trình Viên Frontend chuyên về Next.js, TypeScript và giao diện web hiện đại.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CV Võ Thanh Phát" }],
+  },
+};
 
 export default async function CVPage() {
   const dict = await getDictionary("vi");

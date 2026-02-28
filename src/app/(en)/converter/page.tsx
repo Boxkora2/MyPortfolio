@@ -1,4 +1,31 @@
+import type { Metadata } from "next";
 import { VideoDownloader } from "@/components/VideoDownloader";
+
+export const metadata: Metadata = {
+  title: "Video Converter & Downloader Tool",
+  description:
+    "A local video downloader and converter utility built by Vo Thanh Phat. Supports YouTube, TikTok, Instagram, and more via yt-dlp. Runs only in local environments.",
+  keywords: ["video downloader", "video converter", "yt-dlp", "youtube downloader", "Vo Thanh Phat", "web tool"],
+  alternates: {
+    canonical: "https://korachoco.cv/converter",
+    languages: {
+      en: "https://korachoco.cv/converter",
+      vi: "https://korachoco.cv/vi/converter",
+      "x-default": "https://korachoco.cv/converter",
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    alternateLocale: ["vi_VN"],
+    url: "https://korachoco.cv/converter",
+    title: "Video Converter & Downloader | Vo Thanh Phat",
+    description:
+      "A local video downloader utility supporting YouTube, TikTok, Instagram, and more.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Video Converter Tool" }],
+  },
+  robots: { index: true, follow: true },
+};
 
 export default async function ConverterPage() {
   return (

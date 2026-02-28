@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useRef } from "react";
 import { FaGithub, FaInstagram, FaExternalLinkAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 
@@ -134,10 +135,12 @@ export function FeaturedSection() {
                 />
 
                 {/* Thumbnail */}
-                <img
+                <Image
                   src={project.thumbnailUrl}
-                  alt={`${project.title} thumbnail`}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                  alt={`${project.title} project thumbnail`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className={`object-cover transition-opacity duration-300 ${
                     hoveredProject === index ? "opacity-0" : "opacity-100"
                   }`}
                 />

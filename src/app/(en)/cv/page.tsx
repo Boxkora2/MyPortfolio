@@ -1,5 +1,37 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getDictionary } from "../../../get-dictionary";
+
+export const metadata: Metadata = {
+  title: "Curriculum Vitae — Vo Thanh Phat",
+  description:
+    "View and download the professional CV of Vo Thanh Phat — Frontend Developer. Skills include Next.js, React, TypeScript, Tailwind CSS, and modern UI/UX design.",
+  keywords: [
+    "Vo Thanh Phat CV",
+    "frontend developer resume",
+    "next.js developer cv",
+    "web developer resume",
+    "Vo Thanh Phat portfolio",
+  ],
+  alternates: {
+    canonical: "https://korachoco.cv/cv",
+    languages: {
+      en: "https://korachoco.cv/cv",
+      vi: "https://korachoco.cv/vi/cv",
+      "x-default": "https://korachoco.cv/cv",
+    },
+  },
+  openGraph: {
+    type: "profile",
+    locale: "en_US",
+    alternateLocale: ["vi_VN"],
+    url: "https://korachoco.cv/cv",
+    title: "CV — Vo Thanh Phat | Frontend Developer",
+    description:
+      "Professional CV of Vo Thanh Phat — Frontend Developer specialising in Next.js, TypeScript, and modern web interfaces.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Vo Thanh Phat CV" }],
+  },
+};
 
 export default async function CVPage() {
   const dict = await getDictionary("en");

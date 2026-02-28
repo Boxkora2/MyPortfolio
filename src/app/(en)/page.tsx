@@ -1,17 +1,66 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getDictionary } from "../../get-dictionary";
 import { FeaturedSection } from "@/components/FeaturedSection";
+
+export const metadata: Metadata = {
+  title: "Vo Thanh Phat | Frontend Developer",
+  description:
+    "Portfolio of Vo Thanh Phat — a Frontend Developer from Vietnam specialising in Next.js, TypeScript, React, and modern web interfaces.",
+  keywords: [
+    "Vo Thanh Phat",
+    "frontend developer",
+    "next.js developer",
+    "typescript developer",
+    "web developer vietnam",
+    "portfolio",
+  ],
+  alternates: {
+    canonical: "https://korachoco.cv",
+    languages: {
+      en: "https://korachoco.cv",
+      vi: "https://korachoco.cv/vi",
+      "x-default": "https://korachoco.cv",
+    },
+  },
+  openGraph: {
+    type: "profile",
+    locale: "en_US",
+    alternateLocale: ["vi_VN"],
+    url: "https://korachoco.cv",
+    title: "Vo Thanh Phat | Frontend Developer",
+    description:
+      "Portfolio of Vo Thanh Phat — a Frontend Developer from Vietnam specialising in Next.js, TypeScript, React, and modern web interfaces.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Vo Thanh Phat — Frontend Developer",
+      },
+    ],
+  },
+};
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Vo Thanh Phat",
+  alternateName: "Võ Thanh Phát",
   url: "https://korachoco.cv",
   jobTitle: "Frontend Developer",
-  description: "Frontend Developer specialising in Next.js, TypeScript, and modern web interfaces.",
+  description: "Frontend Developer from Vietnam specialising in Next.js, TypeScript, React, and modern web interfaces.",
+  nationality: {
+    "@type": "Country",
+    name: "Vietnam",
+  },
+  knowsLanguage: ["en", "vi"],
+  knowsAbout: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "Web Development"],
+  image: "https://korachoco.cv/profile.PNG",
   sameAs: [
     "https://github.com/korachoco",
     "https://linkedin.com/in/korachoco",
+    "https://korachoco.cv",
   ],
 };
 
@@ -41,18 +90,19 @@ export default async function Home() {
             <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-[var(--color-lunar-card)]">
                <Image 
                  src="/profile.PNG"
-                 alt="Avatar"
+                 alt="Vo Thanh Phat — Frontend Developer profile photo"
                  fill
                  sizes="(max-width: 768px) 192px, 192px"
                  className="object-cover"
+                 priority
                />
             </div>
           </div>
           
           <div className="text-center md:text-left">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-glow">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-glow">
               {dict.home.title}
-            </h2>
+            </h1>
             <p className="text-xl text-[var(--color-lunar-secondary)] font-medium">
               {dict.home.role}
             </p>

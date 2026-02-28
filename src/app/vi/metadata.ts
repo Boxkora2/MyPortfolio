@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
+/**
+ * This file is intentionally empty.
+ *
+ * Metadata is now defined per-page:
+ * - Globally: src/app/layout.tsx
+ * - Per locale: src/app/(en)/layout.tsx and src/app/vi/layout.tsx
+ * - Per page: each page.tsx exports its own `metadata` const
+ *
+ * See: https://nextjs.org/docs/app/api-reference/file-conventions/metadata
+ */
 
-export const metadata: Metadata = {
-  title: "Hồ Sơ Của Tôi | Lập Trình Viên Web",
-  description: "Hồ Sơ Lập Trình Viên Web - Xây dựng ứng dụng web hiện đại với đam mê và chuyên môn",
-  openGraph: {
-    locale: "vi_VN",
-    url: "https://korachoco.cv/vi",
-    title: "Hồ Sơ Của Tôi | Lập Trình Viên Web",
-    description: "Hồ Sơ Lập Trình Viên Web - Xây dựng ứng dụng web hiện đại với đam mê và chuyên môn",
-  },
-};

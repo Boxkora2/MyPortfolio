@@ -1,10 +1,9 @@
 import { MetadataRoute } from 'next'
- 
+
+// Always use the canonical production URL — never expose preview deployment URLs
+const BASE_URL = 'https://korachoco.cv'
+
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_BASE_URL || 'https://korachoco.cv'
-  
   return {
     rules: [
       {
@@ -12,7 +11,21 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: ['/api/'],
       },
+      {
+        // Permit AI assistants to read the dedicated LLM context files
+        userAgent: 'GPTBot',
+        allow: ['/llms.txt', '/llms-full.txt'],
+      },
+      {
+        userAgent: 'anthropic-ai',
+        allow: ['/llms.txt', '/llms-full.txt'],
+      },
+      {
+        userAgent: 'Google-Extended',
+        allow: ['/llms.txt', '/llms-full.txt'],
+      },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${BASE_URL}/sitemap.xml`,
+    host: BASE_URL,
   }
 }

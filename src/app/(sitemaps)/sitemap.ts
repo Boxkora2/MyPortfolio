@@ -1,71 +1,84 @@
 import { MetadataRoute } from 'next'
- 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_BASE_URL || 'https://korachoco.cv'
-  
-  const currentDate = new Date()
 
-  // Helper to generate alternates for a path
+// Always use the canonical production URL — never expose Vercel preview URLs
+const BASE_URL = 'https://korachoco.cv'
+
+// Use a fixed last-modified date to prevent cache busting on every build
+// Update this when content actually changes
+const LAST_MODIFIED = new Date('2026-02-28')
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  // Helper to generate hreflang alternates for a path
   const getAlternates = (path: string = '') => {
-    const enPath = `${baseUrl}${path}`
-    const viPath = `${baseUrl}/vi${path}`
-    
+    const enPath = `${BASE_URL}${path}`
+    const viPath = `${BASE_URL}/vi${path}`
     return {
       languages: {
-        en: enPath,
-        vi: viPath,
-        // x-default for unmatched languages (fallback to English)
+        'en': enPath,
+        'vi': viPath,
         'x-default': enPath,
       },
     }
   }
-  
+
   return [
     // --- English Pages ---
     {
-      url: baseUrl,
-      lastModified: currentDate,
+      url: BASE_URL,
+      lastModified: LAST_MODIFIED,
       changeFrequency: 'monthly',
       priority: 1,
       alternates: getAlternates(''),
     },
     {
-      url: `${baseUrl}/clicky-addicty`,
-      lastModified: currentDate,
+      url: `${BASE_URL}/cv`,
+      lastModified: LAST_MODIFIED,
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.9,
+      alternates: getAlternates('/cv'),
+    },
+    {
+      url: `${BASE_URL}/clicky-addicty`,
+      lastModified: LAST_MODIFIED,
+      changeFrequency: 'monthly',
+      priority: 0.7,
       alternates: getAlternates('/clicky-addicty'),
     },
     {
-      url: `${baseUrl}/converter`,
-      lastModified: currentDate,
+      url: `${BASE_URL}/converter`,
+      lastModified: LAST_MODIFIED,
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.7,
       alternates: getAlternates('/converter'),
     },
 
     // --- Vietnamese Pages ---
     {
-      url: `${baseUrl}/vi`,
-      lastModified: currentDate,
+      url: `${BASE_URL}/vi`,
+      lastModified: LAST_MODIFIED,
       changeFrequency: 'monthly',
-      priority: 1,
+      priority: 0.9,
       alternates: getAlternates(''),
     },
     {
-      url: `${baseUrl}/vi/clicky-addicty`,
-      lastModified: currentDate,
+      url: `${BASE_URL}/vi/cv`,
+      lastModified: LAST_MODIFIED,
       changeFrequency: 'monthly',
       priority: 0.8,
+      alternates: getAlternates('/cv'),
+    },
+    {
+      url: `${BASE_URL}/vi/clicky-addicty`,
+      lastModified: LAST_MODIFIED,
+      changeFrequency: 'monthly',
+      priority: 0.6,
       alternates: getAlternates('/clicky-addicty'),
     },
     {
-      url: `${baseUrl}/vi/converter`,
-      lastModified: currentDate,
+      url: `${BASE_URL}/vi/converter`,
+      lastModified: LAST_MODIFIED,
       changeFrequency: 'monthly',
-      priority: 0.8,
+      priority: 0.6,
       alternates: getAlternates('/converter'),
     },
   ]

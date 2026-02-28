@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     languages: {
       "en": "https://korachoco.cv",
       "vi": "https://korachoco.cv/vi",
+      "x-default": "https://korachoco.cv",
     },
   },
 };

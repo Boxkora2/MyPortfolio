@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { FaYoutube, FaDownload, FaMusic, FaVideo, FaFile, FaSpinner } from "react-icons/fa";
 
@@ -168,10 +169,13 @@ export function VideoDownloader() {
                 <div className="lg:w-1/3">
                     <div className="relative aspect-video bg-black rounded-lg overflow-hidden shadow-md group">
                         {videoInfo.thumbnail ? (
-                            <img 
+                            <Image 
                                 src={videoInfo.thumbnail} 
-                                alt="Video Thumbnail" 
-                                className="w-full h-full object-cover"
+                                alt={videoInfo.title ? `Thumbnail for ${videoInfo.title}` : "Video thumbnail preview"}
+                                fill
+                                sizes="(max-width: 1024px) 100vw, 33vw"
+                                className="object-cover"
+                                unoptimized
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-500">
